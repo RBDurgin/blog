@@ -11,6 +11,7 @@ const { title, description, type = 'website', publishedTime, articleTags, image 
 const path = Astro.url.pathname;
 const isHome = path === '/blog/' || path === '/blog' || path === '/';
 const isTags = path.startsWith('/blog/tags');
+const isSearch = path.startsWith('/blog/search');
 ---
 <html lang="en">
   <head>
@@ -47,10 +48,11 @@ const isTags = path.startsWith('/blog/tags');
       <nav class="rbd-nav">
         <a href="/blog/" class={isHome ? 'on' : ''}>[writing]</a>
         <a href="/blog/tags/" class={isTags ? 'on' : ''}>[tags]</a>
+        <a href="/blog/search/" class={isSearch ? 'on' : ''}>[search]</a>
         <a href="/blog/rss.xml">[rss]</a>
       </nav>
     </header>
-    <main class="rbd-main">
+    <main class="rbd-main" data-pagefind-body>
       <slot />
     </main>
     <footer class="rbd-footer">

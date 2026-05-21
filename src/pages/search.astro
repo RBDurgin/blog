@@ -1,0 +1,106 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="search | rbd" description="Search all posts on rbd_.">
+  <div class="rbd-hero">
+    <span class="kicker">search</span>
+    <h1 class="rbd-hero-title">[search]</h1>
+  </div>
+  <div id="search"></div>
+</Layout>
+
+<link href="/blog/pagefind/pagefind-ui.css" rel="stylesheet" />
+<script src="/blog/pagefind/pagefind-ui.js" is:inline></script>
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', () => {
+    new PagefindUI({
+      element: '#search',
+      baseUrl: '/blog',
+      showImages: false,
+      excerptLength: 20,
+    });
+  });
+</script>
+
+<style>
+  #search {
+    --pagefind-ui-scale: 0.9;
+
+    --pagefind-ui-background: var(--paper-0);
+    --pagefind-ui-border: var(--paper-3);
+    --pagefind-ui-tag: var(--paper-2);
+
+    --pagefind-ui-text: var(--ink-1);
+    --pagefind-ui-placeholder: var(--ink-3);
+    --pagefind-ui-primary: var(--accent);
+
+    --pagefind-ui-font: var(--font-body);
+    --pagefind-ui-border-radius: 3px;
+    --pagefind-ui-input-height: 40px;
+
+    margin-top: var(--space-5);
+  }
+
+  #search .pagefind-ui__search-input {
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
+    background: var(--paper-2);
+    color: var(--ink-0);
+    caret-color: var(--accent);
+  }
+
+  #search .pagefind-ui__result-title {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--ink-0);
+  }
+
+  #search .pagefind-ui__result-title a:hover {
+    color: var(--accent);
+  }
+
+  #search .pagefind-ui__result-excerpt {
+    font-family: var(--font-body);
+    font-size: var(--t-small);
+    color: var(--ink-2);
+    line-height: var(--lh-normal);
+  }
+
+  #search .pagefind-ui__result-excerpt mark {
+    background: var(--accent-wash);
+    color: var(--accent);
+    border-radius: var(--radius-1);
+    padding: 0 2px;
+  }
+
+  #search .pagefind-ui__result {
+    border-top: 1px solid var(--paper-3);
+    padding: var(--space-4) var(--space-1);
+  }
+
+  #search .pagefind-ui__button {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    background: transparent;
+    color: var(--ink-0);
+    border: 1px solid var(--paper-4);
+    border-radius: var(--radius-3);
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background var(--dur-1) var(--ease-out),
+                border-color var(--dur-1) var(--ease-out);
+  }
+
+  #search .pagefind-ui__button:hover {
+    background: var(--paper-2);
+    border-color: var(--ink-3);
+  }
+
+  #search .pagefind-ui__search-input:focus-visible,
+  #search .pagefind-ui__button:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+</style>
