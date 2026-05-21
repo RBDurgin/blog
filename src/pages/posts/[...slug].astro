@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
@@ -12,17 +13,27 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await post.render();
 ---
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>{post.data.title}</title>
-    <meta name="description" content={post.data.description} />
-  </head>
-  <body>
-    <a href="/blog/">← Back</a>
-    <h1>{post.data.title}</h1>
-    <p>{post.data.date.toISOString().slice(0, 10)} · {post.data.tags.join(', ')}</p>
-    <Content />
-  </body>
-</html>
+<Layout title={post.data.title} description={post.data.description}>
+  <article class="rbd-article">
+    <a href="/blog/" class="rbd-back">← writing</a>
+
+    <div class="rbd-article-head">
+      <div class="rbd-article-meta">
+        <time datetime={post.data.date.toISOString()}>{post.data.date.toISOString().slice(0, 10)}</time>
+        {post.data.tags.map(tag => (
+          <span class="rbd-tag">{tag}</span>
+        ))}
+      </div>
+      <h1 class="rbd-article-title">{post.data.title}</h1>
+      <p class="rbd-article-dek">{post.data.description}</p>
+    </div>
+
+    <hr class="rbd-rule" />
+
+    <div class="rbd-prose">
+      <Content />
+    </div>
+
+    <p class="rbd-sig">rbd</p>
+  </article>
+</Layout>

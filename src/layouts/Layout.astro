@@ -1,0 +1,39 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description } = Astro.props;
+const path = Astro.url.pathname;
+const isHome = path === '/blog/' || path === '/blog' || path === '/';
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="icon" type="image/svg+xml" href="/blog/favicon.svg" />
+    <link rel="stylesheet" href="/blog/rbd-tokens.css" />
+    <link rel="stylesheet" href="/blog/rbd-blog.css" />
+  </head>
+  <body class="rbd-page">
+    <header class="rbd-header">
+      <a href="/blog/" class="rbd-mark">
+        <span style="font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--ink-0); letter-spacing: -0.03em;">rbd<span class="cursor-blink" style="color: var(--accent);">_</span></span>
+      </a>
+      <nav class="rbd-nav">
+        <a href="/blog/" class={isHome ? 'on' : ''}>[writing]</a>
+      </nav>
+    </header>
+    <main class="rbd-main">
+      <slot />
+    </main>
+    <footer class="rbd-footer">
+      <div class="rbd-footer-row">
+        <a href="https://github.com/RBDurgin" class="meta-link">github</a>
+      </div>
+      <p class="rbd-sig rbd-footer-sig">rbd</p>
+    </footer>
+  </body>
+</html>
