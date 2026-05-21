@@ -35,6 +35,13 @@ const isSearch = path.startsWith('/blog/search');
     <meta name="twitter:title" content={title} />
     {description && <meta name="twitter:description" content={description} />}
     {image && <meta name="twitter:image" content={image} />}
+    <script is:inline>
+      (function () {
+        var stored = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', stored || (prefersDark ? 'dark' : 'light'));
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/blog/favicon.svg" />
     <link rel="stylesheet" href="/blog/rbd-tokens.css" />
     <link rel="stylesheet" href="/blog/rbd-blog.css" />
@@ -50,6 +57,7 @@ const isSearch = path.startsWith('/blog/search');
         <a href="/blog/tags/" class={isTags ? 'on' : ''}>[tags]</a>
         <a href="/blog/search/" class={isSearch ? 'on' : ''}>[search]</a>
         <a href="/blog/rss.xml">[rss]</a>
+        <button id="theme-toggle" class="rbd-nav-toggle" aria-label="Toggle theme"></button>
       </nav>
     </header>
     <main class="rbd-main" data-pagefind-body>
@@ -61,5 +69,21 @@ const isSearch = path.startsWith('/blog/search');
       </div>
       <p class="rbd-sig rbd-footer-sig">rbd</p>
     </footer>
+    <script is:inline>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function update() {
+          var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+          btn.textContent = dark ? '[☀]' : '[☽]';
+        }
+        update();
+        btn.addEventListener('click', function () {
+          var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('theme', next);
+          update();
+        });
+      })();
+    </script>
   </body>
 </html>
