@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import { readingTime } from '../../utils/readingTime';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
@@ -20,9 +21,14 @@ const { Content } = await post.render();
     <div class="rbd-article-head">
       <div class="rbd-article-meta">
         <time datetime={post.data.date.toISOString()}>{post.data.date.toISOString().slice(0, 10)}</time>
-        {post.data.tags.map(tag => (
-          <a href={`/blog/tags/${tag}/`} class="rbd-tag" style="text-decoration: none;">{tag}</a>
-        ))}
+        <span>{readingTime(post.body)}</span>
+        {post.data.tags.length > 0 && (
+          <span class="rbd-tags-row">
+            {post.data.tags.map(tag => (
+              <a href={`/blog/tags/${tag}/`} class="rbd-tag" style="text-decoration: none;">{tag}</a>
+            ))}
+          </span>
+        )}
       </div>
       <h1 class="rbd-article-title">{post.data.title}</h1>
       <p class="rbd-article-dek">{post.data.description}</p>

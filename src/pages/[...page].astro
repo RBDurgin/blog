@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import { readingTime } from '../utils/readingTime';
 
 export async function getStaticPaths({ paginate }) {
   const posts = (await getCollection('posts', ({ data }) => !data.draft))
@@ -24,6 +25,7 @@ const { page } = Astro.props;
         <p class="rbd-post-card-dek">{post.data.description}</p>
         <div class="rbd-post-card-meta">
           <span>{post.data.date.toISOString().slice(0, 10)}</span>
+          <span>{readingTime(post.body)}</span>
           {post.data.tags.length > 0 && (
             <span class="rbd-tags-row">
               {post.data.tags.map(tag => (
