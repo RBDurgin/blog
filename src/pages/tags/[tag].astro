@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+
+  const tagMap = new Map<string, typeof posts>();
+  for (const post of posts) {
+    for (const tag of post.data.tags) {
+      if (!tagMap.has(tag)) tagMap.set(tag, []);
+      tagMap.get(tag)!.push(post);
+    }
+  }
+
+  return [...tagMap.entries()].map(([tag, tagPosts]) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: tagPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+<Layout title={`${tag} | rbd`} description={`Posts tagged with ${tag}.`}>
+  <div class="rbd-hero">
+    <span class="kicker">tag</span>
+    <h1 class="rbd-hero-title">[{tag}]</h1>
+  </div>
+
+  <a href="/blog/tags/" class="rbd-back" style="display: inline-block; margin-bottom: 1.5rem;">← all tags</a>
+
+  <div class="rbd-post-list">
+    {posts.map(post => (
+      <a href={`/blog/posts/${post.slug}/`} class="rbd-post-card" style="text-decoration: none;">
+        <p class="rbd-post-card-title">{post.data.title}</p>
+        <p class="rbd-post-card-dek">{post.data.description}</p>
+        <div class="rbd-post-card-meta">
+          <span>{post.data.date.toISOString().slice(0, 10)}</span>
+          {post.data.tags.length > 0 && (
+            <span class="rbd-tags-row">
+              {post.data.tags.map(t => (
+                <a href={`/blog/tags/${t}/`} class="rbd-tag" style="text-decoration: none;">{t}</a>
+              ))}
+            </span>
+          )}
+        </div>
+      </a>
+    ))}
+  </div>
+</Layout>

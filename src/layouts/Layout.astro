@@ -6,6 +6,7 @@ interface Props {
 const { title, description } = Astro.props;
 const path = Astro.url.pathname;
 const isHome = path === '/blog/' || path === '/blog' || path === '/';
+const isTags = path.startsWith('/blog/tags');
 ---
 <html lang="en">
   <head>
@@ -24,6 +25,7 @@ const isHome = path === '/blog/' || path === '/blog' || path === '/';
       </a>
       <nav class="rbd-nav">
         <a href="/blog/" class={isHome ? 'on' : ''}>[writing]</a>
+        <a href="/blog/tags/" class={isTags ? 'on' : ''}>[tags]</a>
       </nav>
     </header>
     <main class="rbd-main">

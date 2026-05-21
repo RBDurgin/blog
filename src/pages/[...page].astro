@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+export async function getStaticPaths({ paginate }) {
+  const posts = (await getCollection('posts', ({ data }) => !data.draft))
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  return paginate(posts, { pageSize: 10 });
+}
+
+const { page } = Astro.props;
+---
+<Layout title="Robert Durgin">
+  <div class="rbd-hero">
+    <span class="kicker">writing</span>
+    <h1 class="rbd-hero-title">Robert <em>Durgin</em></h1>
+    <p class="rbd-hero-lede">Software engineering. AI. Side projects.</p>
+  </div>
+
+  <div class="rbd-post-list">
+    {page.data.map(post => (
+      <a href={`/blog/posts/${post.slug}/`} class="rbd-post-card" style="text-decoration: none;">
+        <p class="rbd-post-card-title">{post.data.title}</p>
+        <p class="rbd-post-card-dek">{post.data.description}</p>
+        <div class="rbd-post-card-meta">
+          <span>{post.data.date.toISOString().slice(0, 10)}</span>
+          {post.data.tags.length > 0 && (
+            <span class="rbd-tags-row">
+              {post.data.tags.map(tag => (
+                <a href={`/blog/tags/${tag}/`} class="rbd-tag" style="text-decoration: none;" onclick="event.stopPropagation();">{tag}</a>
+              ))}
+            </span>
+          )}
+        </div>
+      </a>
+    ))}
+  </div>
+
+  {page.lastPage > 1 && (
+    <nav class="rbd-pagination">
+      {page.url.prev
+        ? <a href={page.url.prev} class="rbd-pagination-link">← Newer</a>
+        : <span class="rbd-pagination-link rbd-pagination-link--disabled">← Newer</span>
+      }
+      <span class="rbd-pagination-info">Page {page.currentPage} of {page.lastPage}</span>
+      {page.url.next
+        ? <a href={page.url.next} class="rbd-pagination-link">Older →</a>
+        : <span class="rbd-pagination-link rbd-pagination-link--disabled">Older →</span>
+      }
+    </nav>
+  )}
+</Layout>
