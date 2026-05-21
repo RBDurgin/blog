@@ -5,13 +5,18 @@ import { readingTime } from '../../utils/readingTime';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
-  return posts.map(post => ({
+  posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  return posts.map((post, i) => ({
     params: { slug: post.slug },
-    props: { post },
+    props: {
+      post,
+      prevPost: posts[i + 1] ?? null,
+      nextPost: posts[i - 1] ?? null,
+    },
   }));
 }
 
-const { post } = Astro.props;
+const { post, prevPost, nextPost } = Astro.props;
 const { Content } = await post.render();
 ---
 <Layout
@@ -46,6 +51,44 @@ const { Content } = await post.render();
       <Content />
     </div>
 
+    {(prevPost || nextPost) && (
+      <nav class="rbd-post-nav" aria-label="Post navigation">
+        {prevPost
+          ? <a href={`/blog/posts/${prevPost.slug}/`} class="rbd-post-nav-prev" rel="prev">← {prevPost.data.title}</a>
+          : <span />
+        }
+        {nextPost &&
+          <a href={`/blog/posts/${nextPost.slug}/`} class="rbd-post-nav-next" rel="next">{nextPost.data.title} →</a>
+        }
+      </nav>
+    )}
+
     <p class="rbd-sig">rbd</p>
   </article>
 </Layout>
+
+<style>
+  .rbd-post-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rbd-border, #e2e8f0);
+    font-size: 0.875rem;
+  }
+  .rbd-post-nav-prev,
+  .rbd-post-nav-next {
+    color: inherit;
+    text-decoration: none;
+    max-width: 45%;
+  }
+  .rbd-post-nav-prev:hover,
+  .rbd-post-nav-next:hover {
+    text-decoration: underline;
+  }
+  .rbd-post-nav-next {
+    margin-left: auto;
+    text-align: right;
+  }
+</style>
