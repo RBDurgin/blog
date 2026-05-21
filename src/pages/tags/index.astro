@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const posts = await getCollection('posts', ({ data }) => !data.draft);
+
+const tagCounts = new Map<string, number>();
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+  }
+}
+
+const tags = [...tagCounts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+---
+<Layout title="tags | rbd" description="All tags used across posts.">
+  <div class="rbd-hero">
+    <span class="kicker">tags</span>
+    <h1 class="rbd-hero-title">[tags]</h1>
+  </div>
+
+  <div class="rbd-tags-row" style="flex-wrap: wrap; gap: 12px; margin-top: 1.5rem;">
+    {tags.map(([tag, count]) => (
+      <a href={`/blog/tags/${tag}/`} class="rbd-tag" style="text-decoration: none; font-size: 14px; padding: 4px 12px;">
+        {tag} <span style="color: var(--ink-2); margin-left: 4px;">{count}</span>
+      </a>
+    ))}
+  </div>
+</Layout>
