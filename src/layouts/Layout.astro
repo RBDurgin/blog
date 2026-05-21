@@ -2,8 +2,12 @@
 interface Props {
   title: string;
   description?: string;
+  type?: 'website' | 'article';
+  publishedTime?: Date;
+  articleTags?: string[];
+  image?: string;
 }
-const { title, description } = Astro.props;
+const { title, description, type = 'website', publishedTime, articleTags, image } = Astro.props;
 const path = Astro.url.pathname;
 const isHome = path === '/blog/' || path === '/blog' || path === '/';
 const isTags = path.startsWith('/blog/tags');
@@ -14,9 +18,26 @@ const isTags = path.startsWith('/blog/tags');
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="Robert Durgin" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={Astro.url.href} />
+    {image && <meta property="og:image" content={image} />}
+    {type === 'article' && publishedTime && (
+      <meta property="article:published_time" content={publishedTime.toISOString()} />
+    )}
+    {type === 'article' && articleTags?.map(tag => (
+      <meta property="article:tag" content={tag} />
+    ))}
+    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {image && <meta name="twitter:image" content={image} />}
     <link rel="icon" type="image/svg+xml" href="/blog/favicon.svg" />
     <link rel="stylesheet" href="/blog/rbd-tokens.css" />
     <link rel="stylesheet" href="/blog/rbd-blog.css" />
+    <link rel="alternate" type="application/rss+xml" title="Robert Durgin RSS Feed" href="/blog/rss.xml" />
   </head>
   <body class="rbd-page">
     <header class="rbd-header">
@@ -26,6 +47,7 @@ const isTags = path.startsWith('/blog/tags');
       <nav class="rbd-nav">
         <a href="/blog/" class={isHome ? 'on' : ''}>[writing]</a>
         <a href="/blog/tags/" class={isTags ? 'on' : ''}>[tags]</a>
+        <a href="/blog/rss.xml">[rss]</a>
       </nav>
     </header>
     <main class="rbd-main">
