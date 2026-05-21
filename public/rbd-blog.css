@@ -186,6 +186,7 @@
 }
 .rbd-post-card-meta {
   display: flex;
+  align-items: center;
   gap: 16px;
   font-family: var(--font-mono);
   font-size: 12px;
