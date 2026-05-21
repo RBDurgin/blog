@@ -149,6 +149,36 @@
 }
 
 /* ============================================================
+   LIGHT THEME OVERRIDES
+   Inverts paper/ink scales; amber accent stays the same.
+   ============================================================ */
+
+:root[data-theme="light"] {
+  --paper-0: #ede5d0;
+  --paper-1: #f5edd8;
+  --paper-2: #e4dbc6;
+  --paper-3: #d4c8b0;
+  --paper-4: #c0b49c;
+
+  --ink-0: #16140f;
+  --ink-1: #2a261f;
+  --ink-2: #5b544a;
+  --ink-3: #8a8276;
+
+  --code-bg:   #e8dfc9;
+  --code-bg-2: #ede5d0;
+  --code-fg:   #16140f;
+  --code-mute: #8a8276;
+  --code-line: #d4c8b0;
+
+  --shadow-1: 0 1px 0 0 var(--paper-3);
+  --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.12),
+              0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-3: 0 8px 32px rgba(0, 0, 0, 0.16),
+              0 2px 6px rgba(0, 0, 0, 0.10);
+}
+
+/* ============================================================
    SEMANTIC ELEMENTS — terminal-flavored base.
    ============================================================ */
 
