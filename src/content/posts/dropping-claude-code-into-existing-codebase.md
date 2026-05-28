@@ -1,12 +1,12 @@
 ---
-title: "Dropping Claude Code Into an Existing Codebase: What /init Actually Writes in Your CLAUDE.md"
-description: "A practitioner walk-through of installing Claude Code, running /init on a real monorepo, and reading what the auto-generated CLAUDE.md gets right — and what you still have to teach it."
+title: "Onboarding Claude Code to a Real Codebase: What /init Gets Right, and What You Still Have to Teach It"
+description: "A practitioner walk-through of running /init on a real Express API and reading the auto-generated CLAUDE.md critically — what it picked up on its own, and the three things I had to add by hand."
 date: 2026-05-28
 tags: ["claude-code", "ai-workflows", "developer-tools", "productivity"]
 draft: false
 ---
 
-If you've watched the AI coding tool space for the last year, you've probably developed a healthy skepticism. Autocomplete-on-steroids is fine, but every senior engineer I know eventually hits the same wall: the tool doesn't understand the *project*. It hallucinates module paths, ignores your build system, and confidently rewrites the one file with a load-bearing comment that says "do not refactor."
+If you've watched the AI coding tool space for the last year, you've probably developed a healthy skepticism. Autocomplete-on-steroids is fine. But every senior engineer I know eventually hits the same wall: the tool doesn't understand the *project*. It hallucinates module paths, ignores your build system, and confidently rewrites the one file with a load-bearing comment that says "do not refactor."
 
 Claude Code takes a different shape. It's a terminal-native agent that runs in your repo, reads your code, runs your commands, and — critically — onboards itself via a file called `CLAUDE.md` that you generate with a single command: `/init`.
 
@@ -16,11 +16,11 @@ This post is a concrete walk-through. Install it, point it at a real codebase, r
 
 The pitch isn't "write your code for you." After twenty years of writing software, I don't want that. The pitch is more like: a junior teammate who has read the entire codebase before you say good morning, can run the build, can grep for the thing you half-remember, and will draft a PR you can review in five minutes.
 
-Three things make Claude Code different from IDE-integrated assistants:
+Three things set Claude Code apart from IDE-integrated assistants:
 
-1. **It lives in the terminal.** No editor lock-in. It works on whatever you already use — vim, VS Code, JetBrains — because it's a process, not a plugin.
-2. **It's agentic.** It can run commands, read files, execute tests, and iterate. You're not copy-pasting between a chat window and your editor.
-3. **It learns your project once.** The `CLAUDE.md` file at your repo root is loaded into every session. You teach it your conventions one time, not every conversation.
+1. **It lives in the terminal** — a process, not a plugin, so it works with whatever editor you already use.
+2. **It's agentic** — it runs commands, reads files, executes tests, and iterates without you copy-pasting between a chat window and your editor.
+3. **It learns your project once** — a `CLAUDE.md` at the repo root is loaded into every session, so you teach it your conventions once instead of every conversation.
 
 The third point is what `/init` bootstraps for you.
 
@@ -29,16 +29,16 @@ The third point is what `/init` bootstraps for you.
 The install is unceremonious. On macOS or Linux:
 
 ```bash
-curl -fsSL https://claude.com/install.sh | sh
+curl -fsSL https://claude.ai/install.sh | bash
 ```
 
 Homebrew works too:
 
 ```bash
-brew install claude-code
+brew install --cask claude-code
 ```
 
-Then authenticate against your Claude account (Pro, Max, Team, or API):
+Then authenticate against your Claude account (Pro, Max, Team, Enterprise, or Console):
 
 ```bash
 claude
@@ -56,7 +56,7 @@ claude
 > /init
 ```
 
-Claude Code starts exploring. You can watch it work: it reads `package.json`, walks `src/`, opens the route modules to see how they're mounted, peeks at the middleware, scans the `tests/` directory, and looks at recent commits. It's doing what you would do on day one — but in about ninety seconds.
+Claude Code starts exploring. You can watch it work: it reads `package.json`, walks `src/`, opens the route modules to see how they're mounted, peeks at the middleware, scans the `tests/` directory, and looks at recent commits. It's doing what you would do on day one — but in a minute or two.
 
 When it finishes, it drops a `CLAUDE.md` at the repo root.
 
@@ -117,18 +117,7 @@ The fix takes two minutes. Open `CLAUDE.md`, add the missing context, commit it.
 | `LOG_LEVEL` | no | `info` in prod, `debug` in dev |
 ```
 
-That table didn't come from `/init`. I added it after the second session where Claude asked me which env vars the app needed. The rule of thumb: anytime you find yourself explaining the same thing twice, it belongs in `CLAUDE.md`.
-
-## The workflow loop
-
-With `CLAUDE.md` in place, the daily loop looks like this:
-
-1. `cd` into the repo, run `claude`.
-2. Describe what you want in plain English: *"Add a `GET /users/:id/orders` endpoint that uses the same auth middleware as `/orders` and returns paginated results."*
-3. Claude reads the relevant files, proposes a change, asks before running commands that mutate state.
-4. You review the diff, approve, and either commit yourself or let Claude commit.
-
-The Explore–Plan–Code–Commit rhythm is real, and `CLAUDE.md` is what makes the *Explore* step take seconds instead of minutes — because Claude already knows the lay of the land.
+That table didn't come from `/init`. I added it after the second session where Claude asked me which env vars the app needed. The rule of thumb: **anytime you find yourself explaining the same thing twice, it belongs in `CLAUDE.md`.**
 
 ## Takeaways
 
