@@ -67,6 +67,36 @@ const { Content } = await post.render();
   </article>
 </Layout>
 
+<script>
+  import mermaid from 'mermaid';
+
+  function getTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+  }
+
+  function renderMermaid() {
+    document.querySelectorAll('pre[data-language="mermaid"]').forEach(pre => {
+      const code = pre.querySelector('code');
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code?.textContent ?? '';
+      pre.replaceWith(div);
+    });
+    mermaid.initialize({ startOnLoad: false, theme: getTheme() });
+    mermaid.run();
+  }
+
+  renderMermaid();
+
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    setTimeout(() => {
+      document.querySelectorAll('.mermaid svg').forEach(svg => svg.parentElement?.removeAttribute('data-processed'));
+      mermaid.initialize({ startOnLoad: false, theme: getTheme() });
+      mermaid.run();
+    }, 50);
+  });
+</script>
+
 <style>
   .rbd-post-nav {
     display: flex;
@@ -90,5 +120,10 @@ const { Content } = await post.render();
   .rbd-post-nav-next {
     margin-left: auto;
     text-align: right;
+  }
+  .mermaid {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    text-align: center;
   }
 </style>
