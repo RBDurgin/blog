@@ -1,7 +1,7 @@
 ---
 title: "Which Claude Model Should You Actually Use? A Practitioner's Guide to Opus, Sonnet, and Haiku"
-description: "A walk-through of the current Claude 4.x lineup — Opus 4.7, Sonnet 4.6, and Haiku 4.5 — what each is good at, where each falls down, and how to pick without defaulting to the most expensive one."
-date: 2026-05-28
+description: "A walk-through of the current Claude 4.x lineup — Opus 4.8, Sonnet 4.6, and Haiku 4.5 — what each is good at, where each falls down, and how to pick without defaulting to the most expensive one."
+date: 2026-06-05
 tags: ["claude", "claude-code", "ai-workflows", "model-selection"]
 draft: false
 ---
@@ -12,11 +12,11 @@ Here's what's in the lineup right now, what each model is good for, where each f
 
 ## The current lineup
 
-As of mid-2026 there are three Claude 4.x models you'll see most often ([Anthropic models overview](https://platform.claude.com/docs/en/about-claude/models/overview)):
+As of June 2026 there are three Claude 4.x models you'll see most often ([Anthropic models overview](https://platform.claude.com/docs/en/about-claude/models/overview)):
 
 | Model | API ID | Price (input / output, per Mtok) | Positioning |
 |---|---|---|---|
-| Claude Opus 4.7 | `claude-opus-4-7` | $5 / $25 | Deepest reasoning, longest agentic loops |
+| Claude Opus 4.8 | `claude-opus-4-8` | $5 / $25 | Deepest reasoning, longest agentic loops |
 | Claude Sonnet 4.6 | `claude-sonnet-4-6` | $3 / $15 | The default workhorse |
 | Claude Haiku 4.5 | `claude-haiku-4-5-20251001` | $1 / $5 | Fast, cheap, surprisingly capable |
 
@@ -26,7 +26,7 @@ They share the same API surface — tool use, prompt caching, vision, extended t
 
 And the gaps between tiers have shrunk with each release. In my experience, Haiku 4.5 will do things that needed Sonnet a year ago, and Sonnet 4.6 will do things that needed Opus a year ago. "Which model should I use" is worth re-asking every time a new version ships.
 
-## Opus 4.7 — when depth is the constraint
+## Opus 4.8 — when depth is the constraint
 
 Opus is the model I reach for when the *thinking* is the hard part, not the typing.
 
@@ -34,16 +34,18 @@ Opus is the model I reach for when the *thinking* is the hard part, not the typi
 
 - **Hard debugging.** A flaky integration test in a 40k-line repo, where the cause could be a race condition, a misconfigured fixture, or a library upgrade three weeks ago. Opus will hold all of that in its head and trace it.
 - **Architectural planning.** "Here's the current shape of the service, here's where we want to be in six months — what's the migration path?" Opus is the model that will actually push back on your assumptions rather than enthusiastically agreeing.
-- **Long agentic loops.** Anything with 20+ tool calls where the agent has to remember why it made a decision twelve steps ago. Smaller models lose the plot.
+- **Long agentic loops.** Anything with 20+ tool calls where the agent has to remember why it made a decision twelve steps ago. Smaller models lose the plot. Opus 4.8 in particular handles long autonomous runs well — multi-step coding tasks that complete overnight without human correction.
 - **Ambiguous specs.** A vague feature request from a PM, half a Slack thread, and a screenshot. Opus is the one that asks the right clarifying questions instead of guessing.
+- **Writing-heavy work.** Opus 4.8 produces noticeably cleaner, warmer prose than prior Opus versions — worth using when the output quality of the text itself matters.
 
 **Where it's the wrong choice:**
 
 - Anything you're doing in a tight loop. The latency adds up.
 - Shallow tasks — renaming, reformatting, generating boilerplate. You're paying for reasoning you're not using.
 - Anything where you've already done the thinking and just need the model to execute. Sonnet will do it faster and just as well.
+- Tightly-controlled pipelines where verbosity matters: Opus 4.8 narrates more during long agentic tasks and asks more clarifying questions on small decisions than prior versions. Easy to tune with a prompt, but worth knowing going in.
 
-In Claude Code, Opus 4.7 has a [`/fast` toggle](https://code.claude.com/docs/en/fast-mode): same model, same quality, ~2.5x faster, at $30 / $150 per Mtok — 6x standard Opus pricing. Reach for it when latency is genuinely the bottleneck, not as a default.
+Fast Mode is not available on Opus 4.8. If latency is the bottleneck and you need Opus-tier reasoning, [`claude-opus-4-6-fast`](https://code.claude.com/docs/en/fast-mode) (Opus 4.6 Fast) remains a supported option.
 
 ## Sonnet 4.6 — the default workhorse
 
