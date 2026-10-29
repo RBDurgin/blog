@@ -5,7 +5,7 @@ import { readingTime } from '../utils/readingTime';
 
 export async function getStaticPaths({ paginate }) {
   const posts = (await getCollection('posts', ({ data }) => !data.draft))
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.id.localeCompare(a.id));
   return paginate(posts, { pageSize: 10 });
 }
 
@@ -20,7 +20,7 @@ const { page } = Astro.props;
 
   <div class="rbd-post-list">
     {page.data.map(post => (
-      <a href={`/blog/posts/${post.slug}/`} class="rbd-post-card" style="text-decoration: none;">
+      <a href={`/blog/posts/${post.id}/`} class="rbd-post-card" style="text-decoration: none;">
         <p class="rbd-post-card-title">{post.data.title}</p>
         <p class="rbd-post-card-dek">{post.data.description}</p>
         <div class="rbd-post-card-meta">

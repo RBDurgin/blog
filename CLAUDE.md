@@ -19,7 +19,7 @@ There is no test suite and no linter configured.
 ## Architecture
 
 - **`astro.config.mjs`** — sets `site` + `base: '/blog'` (required for correct asset/link paths on GitHub Pages)
-- **`src/content/config.ts`** — defines the `posts` collection schema (Zod): `title`, `description` (non-empty), `date`, `tags[]`, `draft` (defaults `true`)
+- **`src/content.config.ts`** — defines the `posts` collection (glob loader over `src/content/posts/`) and its schema (Zod): `title`, `description` (non-empty), `date`, `tags[]`, `draft` (defaults `true`)
 - **`src/pages/index.astro`** — lists all non-draft posts sorted newest-first
 - **`src/pages/posts/[...slug].astro`** — renders individual post pages via `getStaticPaths`
 - **`.github/workflows/deploy.yml`** — builds and deploys `main` to GitHub Pages on every push

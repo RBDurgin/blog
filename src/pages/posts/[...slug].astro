@@ -1,13 +1,13 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { readingTime } from '../../utils/readingTime';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
-  posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.id.localeCompare(a.id));
   return posts.map((post, i) => ({
-    params: { slug: post.slug },
+    params: { slug: post.id },
     props: {
       post,
       prevPost: posts[i + 1] ?? null,
@@ -17,7 +17,7 @@ export async function getStaticPaths() {
 }
 
 const { post, prevPost, nextPost } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 ---
 <Layout
   title={post.data.title}
@@ -54,11 +54,11 @@ const { Content } = await post.render();
     {(prevPost || nextPost) && (
       <nav class="rbd-post-nav" aria-label="Post navigation">
         {prevPost
-          ? <a href={`/blog/posts/${prevPost.slug}/`} class="rbd-post-nav-prev" rel="prev">← {prevPost.data.title}</a>
+          ? <a href={`/blog/posts/${prevPost.id}/`} class="rbd-post-nav-prev" rel="prev">← {prevPost.data.title}</a>
           : <span />
         }
         {nextPost &&
-          <a href={`/blog/posts/${nextPost.slug}/`} class="rbd-post-nav-next" rel="next">{nextPost.data.title} →</a>
+          <a href={`/blog/posts/${nextPost.id}/`} class="rbd-post-nav-next" rel="next">{nextPost.data.title} →</a>
         }
       </nav>
     )}

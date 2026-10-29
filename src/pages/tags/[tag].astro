@@ -17,7 +17,7 @@ export async function getStaticPaths() {
     params: { tag },
     props: {
       tag,
-      posts: tagPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+      posts: tagPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.id.localeCompare(a.id)),
     },
   }));
 }
@@ -34,7 +34,7 @@ const { tag, posts } = Astro.props;
 
   <div class="rbd-post-list">
     {posts.map(post => (
-      <a href={`/blog/posts/${post.slug}/`} class="rbd-post-card" style="text-decoration: none;">
+      <a href={`/blog/posts/${post.id}/`} class="rbd-post-card" style="text-decoration: none;">
         <p class="rbd-post-card-title">{post.data.title}</p>
         <p class="rbd-post-card-dek">{post.data.description}</p>
         <div class="rbd-post-card-meta">
